@@ -2,7 +2,6 @@
 Dimension reduction: PCA
 KH (March 2020)
 """
-import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 
@@ -26,7 +25,11 @@ res = pd.DataFrame(fit.components_)
 res.columns = sample_ids
 res.index = ['PC' + str(i) for i in range(1, res.shape[0] + 1)]
 
+var_explained = pd.DataFrame(fit.explained_variance_ratio_)
+var_explained.columns = ["ratio_var_explained"]
+var_explained.index = res.index
+
 # store projected data and variance explained
-np.savetxt(snakemake.output['fit'], res, delimiter='\t')
-np.savetxt(snakemake.output['var'], fit.explained_variance_ratio_, delimiter='\t')
+res.to_csv(snakemake.output['fit'], sep = '\t')
+var_explained.to_csv(snakemake.output['var'], sep='\t')
 

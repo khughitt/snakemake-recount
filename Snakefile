@@ -19,6 +19,9 @@ metadata = pd.read_csv(infile, sep = '\t')
 sample_counts = metadata.groupby('project')['path'].count()
 project_ids = list(sample_counts.index[sample_counts >= config['min_samples']])
 
+# TESTING
+project_ids = project_ids[500:502]
+
 print("Retrieving data for {}/{} projects with sufficient samples.".format(
     len(project_ids), len(sample_counts)))
 

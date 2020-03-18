@@ -2,7 +2,6 @@
 Dimension reduction: PCA
 KH (March 2020)
 """
-import numpy as np
 import pandas as pd
 from sklearn.decomposition import KernelPCA
 
@@ -29,4 +28,4 @@ res.columns = sample_ids
 res.index = ['PC' + str(i) for i in range(1, res.shape[0] + 1)]
 
 # store projected data and variance explained
-np.savetxt(snakemake.output['fit'], fit, delimiter='\t')
+res.to_csv(snakemake.output['fit'], sep='\t')
