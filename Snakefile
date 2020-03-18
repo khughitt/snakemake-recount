@@ -28,6 +28,26 @@ rule download_all:
         expand(join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz'), project=project_ids),
         expand(join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz'), project=project_ids)
 
+rule kpca_rbf:
+    input:
+        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+    output:
+        fit=join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz')
+    params:
+        kernel='rbf'
+    script:
+        'src/project_kpca.py'
+
+rule kpca_linear:
+    input:
+        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+    output:
+        fit=join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz')
+    params:
+        kernel='linear'
+    script:
+        'src/project_kpca.py'
+
 rule pca:
     input:
         join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
