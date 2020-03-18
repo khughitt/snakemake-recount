@@ -1,0 +1,5 @@
+version: '1.0'
+
+output_dir: '/data/human/recount'
+
+min_samples: 10

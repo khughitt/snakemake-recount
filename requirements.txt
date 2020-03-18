@@ -1,0 +1,3 @@
+r-recount
+r-tidyverse
+snakemake-minimal
