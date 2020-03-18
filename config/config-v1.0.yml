@@ -1,5 +1,13 @@
+#
+# Recount2 Snakemake Pipeline Settings
+# V. Keith Hughitt
+# March 2020
+#
 version: '1.0'
 
 output_dir: '/data/human/recount'
 
 min_samples: 10
+
+dimension_reduction:
+  num_dims: 5

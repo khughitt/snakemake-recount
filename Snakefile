@@ -24,8 +24,18 @@ print("Retrieving data for {}/{} projects with sufficient samples.".format(
 
 rule download_all:
     input:
-        counts=expand(join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz'), project=project_ids),
-        phenotype=expand(join(config['output_dir'], 'datasets/{project}/{project}.tsv'), project=project_ids)
+        expand(join(config['output_dir'], 'projected/{project}/pca.tsv.gz'), project=project_ids),
+        expand(join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz'), project=project_ids),
+        expand(join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz'), project=project_ids)
+
+rule pca:
+    input:
+        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+    output:
+        fit=join(config['output_dir'], 'projected/{project}/pca.tsv.gz'),
+        var=join(config['output_dir'], 'projected/{project}/pca_var_explained.tsv')
+    script:
+        'src/project_pca.py'
 
 rule download_recount_project:
     output: 

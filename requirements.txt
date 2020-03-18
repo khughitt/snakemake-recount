@@ -1,3 +1,4 @@
+feather-format
 r-recount
-r-tidyverse
 snakemake-minimal
+scikit-learn
