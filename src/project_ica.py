@@ -1,10 +1,10 @@
 """
-Dimension reduction: PCA
+Dimension reduction: ICA
 KH (March 2020)
 """
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import PCA
+from sklearn.decomposition import FastICA
 
 # load gene expression data
 dat = pd.read_csv(snakemake.input[0], sep='\t')
@@ -14,19 +14,19 @@ sample_ids = dat.columns[:-1]
 # drop gene id column convert to numpy array
 dat = dat.iloc[:, :-1].to_numpy()
 
-# perform sample-wise pca projections
+# perform sample-wise ICA projections;
 
 # note that by default, PCA reduces column dimensionality, while KPCA/FastICA reduce row
 # dimensionality
-pca = PCA(n_components=snakemake.config['dimension_reduction']['num_dims'])
-fit = pca.fit(dat)
+transformer = FastICA(n_components=snakemake.config['dimension_reduction']['num_dims'],
+                      random_state=0)
+fit = transformer.fit_transform(dat.T)
 
-res = pd.DataFrame(fit.components_)
+# convert result to a dataframe with PCs as row and samples as columns
+res = pd.DataFrame(fit.T)
 
 res.columns = sample_ids
 res.index = ['PC' + str(i) for i in range(1, res.shape[0] + 1)]
 
 # store projected data and variance explained
-np.savetxt(snakemake.output['fit'], res, delimiter='\t')
-np.savetxt(snakemake.output['var'], fit.explained_variance_ratio_, delimiter='\t')
-
+np.savetxt(snakemake.output['fit'], fit, delimiter='\t')

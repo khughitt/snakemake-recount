@@ -25,6 +25,7 @@ print("Retrieving data for {}/{} projects with sufficient samples.".format(
 rule download_all:
     input:
         expand(join(config['output_dir'], 'projected/{project}/pca.tsv.gz'), project=project_ids),
+        expand(join(config['output_dir'], 'projected/{project}/ica.tsv.gz'), project=project_ids),
         expand(join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz'), project=project_ids),
         expand(join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz'), project=project_ids)
 
@@ -47,6 +48,14 @@ rule kpca_linear:
         kernel='linear'
     script:
         'src/project_kpca.py'
+
+rule ica:
+    input:
+        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+    output:
+        fit=join(config['output_dir'], 'projected/{project}/ica.tsv.gz')
+    script:
+        'src/project_ica.py'
 
 rule pca:
     input:
