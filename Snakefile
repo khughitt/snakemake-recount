@@ -6,24 +6,21 @@ import pandas as pd
 from os.path import join
 
 # get a list of project ids
-infile = join(config['output_dir'], 'metadata', 'recount_url.tsv')
+infile = join(config['output_dir'], 'metadata', 'recount_num_samples.tsv')
 
 if not os.path.exists(infile):
     raise(Exception("Recount Metadata not available! Use the 'fetch_recount_metadata.R' "
                     "script to retrieve the necessary metadata prior to running the pipeline."))
 
-# load project metadata
+# load project metadata and determine which samples to include
 metadata = pd.read_csv(infile, sep = '\t')
-
-# get a list of all available project ids
-sample_counts = metadata.groupby('project')['path'].count()
-project_ids = list(sample_counts.index[sample_counts >= config['min_samples']])
+project_ids = metadata.project[metadata.number_samples >= config['min_samples']].tolist()
 
 # TESTING
 project_ids = project_ids[500:502]
 
 print("Retrieving data for {}/{} projects with sufficient samples.".format(
-    len(project_ids), len(sample_counts)))
+    len(project_ids), metadata.shape[0]))
 
 rule download_all:
     input:
