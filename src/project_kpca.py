@@ -13,7 +13,7 @@ sample_ids = dat.columns[:-1]
 # drop gene id column convert to numpy array
 dat = dat.iloc[:, :-1].to_numpy()
 
-# perform sample-wise pca projections;
+# perform sample-wise PCA projections;
 
 # note that by default, PCA reduces column dimensionality, while KPCA/FastICA reduce row
 # dimensionality
@@ -28,4 +28,4 @@ res.columns = sample_ids
 res.index = ['PC' + str(i) for i in range(1, res.shape[0] + 1)]
 
 # store projected data and variance explained
-res.to_csv(snakemake.output['fit'], sep='\t')
+res.to_csv(snakemake.output[0], sep='\t')

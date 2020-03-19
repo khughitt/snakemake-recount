@@ -28,4 +28,4 @@ res.columns = sample_ids
 res.index = ['PC' + str(i) for i in range(1, res.shape[0] + 1)]
 
 # store projected data and variance explained
-res.to_csv(snakemake.output['fit'], sep='\t')
+res.to_csv(snakemake.output[0], sep='\t')
