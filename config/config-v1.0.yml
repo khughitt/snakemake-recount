@@ -7,8 +7,9 @@ version: '1.0'
 
 output_dir: '/data/human/recount'
 
-# minimum number of samples required to be included in the analysis
-min_samples: 10
+# minimum number of samples required to be included in the analysis;
+# note that some samples may be excluded during the "cleaning" step
+min_samples: 20
 
 # sample filtering settings
 sample_filtering:
@@ -25,11 +26,11 @@ sample_filtering:
 # dimension reduction settings
 dimension_reduction:
   pca:
-    num_dims: 5
+    num_dims: 3
   ica:
-    num_dims: 5
+    num_dims: 3
     max_iter: 500
-  kpca_linear:
-    num_dims: 5
+  kpca_poly:
+    num_dims: 3
   kpca_rbf:
-    num_dims: 5
+    num_dims: 3

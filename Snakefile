@@ -17,7 +17,7 @@ metadata = pd.read_csv(infile, sep = '\t')
 project_ids = metadata.project[metadata.number_samples >= config['min_samples']].tolist()
 
 # TESTING
-project_ids = project_ids[510:540]
+project_ids = project_ids[200:205]
 
 print("Retrieving data for {}/{} projects with sufficient samples.".format(
     len(project_ids), metadata.shape[0]))
@@ -38,8 +38,9 @@ rule run_deseq2:
 rule cluster_samples:
     input:
         pca=join(config['output_dir'], 'projected/{project}/pca.tsv.gz'),
+        pca_var=join(config['output_dir'], 'projected/{project}/pca_var_explained.tsv'),
         ica=join(config['output_dir'], 'projected/{project}/ica.tsv.gz'),
-        kpca_linear=join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz'),
+        kpca_poly=join(config['output_dir'], 'projected/{project}/kpca_poly.tsv.gz'),
         kpca_rbf=join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz')
     output:
         join(config['output_dir'], 'clusters/{project}_clusters.tsv.gz')
@@ -56,13 +57,13 @@ rule kpca_rbf:
     script:
         'src/project_kpca.py'
 
-rule kpca_linear:
+rule kpca_poly:
     input:
         join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
     output:
-        join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz')
+        join(config['output_dir'], 'projected/{project}/kpca_poly.tsv.gz')
     params:
-        kernel='linear'
+        kernel='poly'
     script:
         'src/project_kpca.py'
 
