@@ -17,8 +17,10 @@ dat = dat.iloc[:, :-1].to_numpy()
 
 # note that by default, PCA reduces column dimensionality, while KPCA/FastICA reduce row
 # dimensionality
-transformer = KernelPCA(n_components=snakemake.config['dimension_reduction']['num_dims'],
-                        kernel=snakemake.params['kernel'])
+ind = "kpca_" + snakemake.params['kernel']
+num_dims = snakemake.config['dimension_reduction'][ind]['num_dims']
+
+transformer = KernelPCA(n_components=num_dims, kernel=snakemake.params['kernel'])
 fit = transformer.fit_transform(dat.T)
 
 # convert result to a dataframe with PCs as row and samples as columns

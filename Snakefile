@@ -17,14 +17,23 @@ metadata = pd.read_csv(infile, sep = '\t')
 project_ids = metadata.project[metadata.number_samples >= config['min_samples']].tolist()
 
 # TESTING
-#project_ids = project_ids[500:502]
+project_ids = project_ids[510:540]
 
 print("Retrieving data for {}/{} projects with sufficient samples.".format(
     len(project_ids), metadata.shape[0]))
 
-rule download_all:
+rule all:
     input:
-        expand(join(config['output_dir'], 'clusters/{project}_clusters.tsv.gz'), project=project_ids)
+        expand(join(config['output_dir'], 'deseq2/{project}_deseq2_results.tsv.gz'), project=project_ids)
+
+rule run_deseq2:
+    input:
+        counts=join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz'),
+        clusters=join(config['output_dir'], 'clusters/{project}_clusters.tsv.gz')
+    output:
+        join(config['output_dir'], 'deseq2/{project}_deseq2_results.tsv.gz')
+    run:
+        'src/run_deseq2.R'
 
 rule cluster_samples:
     input:
@@ -39,7 +48,7 @@ rule cluster_samples:
 
 rule kpca_rbf:
     input:
-        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+        join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
     output:
         join(config['output_dir'], 'projected/{project}/kpca_rbf.tsv.gz')
     params:
@@ -49,7 +58,7 @@ rule kpca_rbf:
 
 rule kpca_linear:
     input:
-        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+        join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
     output:
         join(config['output_dir'], 'projected/{project}/kpca_linear.tsv.gz')
     params:
@@ -59,7 +68,7 @@ rule kpca_linear:
 
 rule ica:
     input:
-        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+        join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
     output:
         join(config['output_dir'], 'projected/{project}/ica.tsv.gz')
     script:
@@ -67,17 +76,25 @@ rule ica:
 
 rule pca:
     input:
-        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+        join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
     output:
         fit=join(config['output_dir'], 'projected/{project}/pca.tsv.gz'),
         var=join(config['output_dir'], 'projected/{project}/pca_var_explained.tsv')
     script:
         'src/project_pca.py'
 
-rule download_recount_project:
+rule clean_dataset:
+    input:
+        join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz')
+    output:
+        join(config['output_dir'], 'datasets/{project}/counts_gene_clean.tsv.gz')
+    script:
+        'src/clean_dataset.R'
+
+rule download_dataset:
     output: 
         counts=join(config['output_dir'], 'datasets/{project}/counts_gene.tsv.gz'),
         phenotype=join(config['output_dir'], 'datasets/{project}/{project}.tsv')
     script:
-        'src/download_recount_dataset.R'
+        'src/download_dataset.R'
 

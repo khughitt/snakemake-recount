@@ -7,7 +7,29 @@ version: '1.0'
 
 output_dir: '/data/human/recount'
 
+# minimum number of samples required to be included in the analysis
 min_samples: 10
 
+# sample filtering settings
+sample_filtering:
+  # minimum sample read ratio compared with the median sample size;
+  # 0.01 means that a sample must have at least 1% of the sample average total reads
+  min_sample_size_ratio: 0.01
+
+  # minimum sample median pairwise pearson correlation with all other samples;
+  # the median pairwise sample correlation is computed for all samples and any samples
+  # with average correlations less than <sample_cor_stdev_cutoff> deviations from the
+  # mean are excluded
+  sample_cor_stdev_cutoff: 3
+
+# dimension reduction settings
 dimension_reduction:
-  num_dims: 5
+  pca:
+    num_dims: 5
+  ica:
+    num_dims: 5
+    max_iter: 500
+  kpca_linear:
+    num_dims: 5
+  kpca_rbf:
+    num_dims: 5

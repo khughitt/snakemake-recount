@@ -17,7 +17,8 @@ dat = dat.iloc[:, :-1].to_numpy()
 
 # note that by default, PCA reduces column dimensionality, while KPCA/FastICA reduce row
 # dimensionality
-transformer = FastICA(n_components=snakemake.config['dimension_reduction']['num_dims'],
+transformer = FastICA(n_components=snakemake.config['dimension_reduction']['ica']['num_dims'],
+                      max_iter=snakemake.config['dimension_reduction']['ica']['max_iter'],
                       random_state=0)
 fit = transformer.fit_transform(dat.T)
 
