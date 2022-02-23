@@ -7,8 +7,7 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(yaml))
 
 # create output directory
-config <- read_yaml('../config/config-v1.0.yml')
-output_dir <- file.path(config$output_dir, 'metadata')
+output_dir <- '../metadata/'
 
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, mode = '0755', recursive = TRUE)
@@ -47,5 +46,9 @@ write_tsv(recount_url, file.path(output_dir, 'recount_url.tsv'))
 write_tsv(num_samples, file.path(output_dir, 'recount_num_samples.tsv'))
 
 # store gene annotations
-write_tsv(recount_genes, file.path(output_dir, 'recount_genes.tsv'))
+genes <- recount_genes %>%
+  as.data.frame() %>%
+  rownames_to_column('ensgene')
+
+write_tsv(genes, file.path(output_dir, 'recount_genes.tsv'))
 

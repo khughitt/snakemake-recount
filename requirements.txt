@@ -1,4 +1,4 @@
-feather-format
+r-arrow
 r-recount
 snakemake-minimal
 scikit-learn

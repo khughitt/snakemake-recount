@@ -1,11 +1,14 @@
 #
-# Recount2 Snakemake Pipeline Settings
+# Recount Recipe Settings
 # V. Keith Hughitt
-# March 2020
+# Jan 2022
 #
 version: '1.0'
 
-output_dir: '/data/human/recount'
+random_seed: 321
+
+# directories
+out_dir: "/data/packages/bio/rna/recount"
 
 # minimum number of samples required to be included in the analysis;
 # note that some samples may be excluded during the "cleaning" step
@@ -21,11 +24,18 @@ sample_filtering:
   # the median pairwise sample correlation is computed for all samples and any samples
   # with average correlations less than <sample_cor_stdev_cutoff> deviations from the
   # mean are excluded
-  sample_cor_stdev_cutoff: 3
+  enable_sample_cor_stdev_filter: false
+  sample_cor_stdev_cutoff: 4
+
+gene_filtering:
+  # max ratios of 0's gene is allowed to have
+  max_zeros: 0.95
 
 # dimension reduction settings
 dimension_reduction:
   pca:
+    num_dims: 3
+  umap:
     num_dims: 3
   ica:
     num_dims: 3
